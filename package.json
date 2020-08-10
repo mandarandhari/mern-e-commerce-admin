@@ -1,0 +1,23 @@
+{
+  "name": "mern-e-commerce-admin",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.14.0",
+    "admin-lte": "^3.0.5",
+    "bcrypt": "^5.0.0",
+    "bootstrap": "^4.5.2",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "icheck-bootstrap": "^3.0.1",
+    "mongoose": "^5.9.28",
+    "morgan": "~1.9.1"
+  }
+}
