@@ -31,19 +31,39 @@
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label for="name">Name</label>
-                                                <input type="text" class="form-control" id="name" placeholder="Enter name">
+                                                <input type="text" class="form-control <% if (user.nameError.length) { %> is-invalid <% } %>" name="name" id="name" placeholder="Enter name" value="<% if (user.name.length) { %><%= user.name %><% } %>">
+                                                <% if (user.nameError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= user.nameError %></span>
+                                                </div>
+                                                <% } %>
                                             </div>
                                             <div class="form-group">
                                                 <label for="email">Email</label>
-                                                <input type="email" class="form-control" id="email" placeholder="Enter email">
+                                                <input type="email" class="form-control <% if (user.emailError.length) { %> is-invalid <% } %>" name="email" id="email" placeholder="Enter email" value="<% if (user.email.length) { %><%= user.email %><% } %>">
+                                                <% if (user.emailError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= user.emailError%></span>
+                                                </div>
+                                                <% } %>
                                             </div>
                                             <div class="form-group">
                                                 <label for="password">Password</label>
-                                                <input type="password" class="form-control" id="password" placeholder="Password">
+                                                <input type="password" class="form-control <% if (user.passwordError.length) { %> is-invalid <% } %>" name="password" id="password" placeholder="Password">
+                                                <% if (user.passwordError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= user.passwordError %></span>
+                                                </div>
+                                                <% } %>
                                             </div>
                                             <div class="form-group">
                                                 <label for="confirmPassword">Confirm Password</label>
-                                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+                                                <input type="password" class="form-control <% if (user.confirmPasswordError.length) { %> is-invalid <% } %>" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
+                                                <% if (user.confirmPasswordError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= user.confirmPasswordError %></span>
+                                                </div>
+                                                <% } %> 
                                             </div>
                                         </div>
                                         <!-- /.card-body -->

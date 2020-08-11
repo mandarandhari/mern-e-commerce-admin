@@ -25,13 +25,15 @@
       
                             <div class="card-tools">
                                 <a href="/user/add" class="btn btn-primary btn-sm float-left">Add User</a>
-                                <div class="input-group input-group-sm float-right mt-0 ml-2" style="width: 150px;">
-                                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-      
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                <form action="" method="get" class="float-right">
+                                    <div class="input-group input-group-sm mt-0 ml-2" style="width: 150px;">
+                                        <input type="text" name="searchterm" class="form-control float-right" placeholder="Search" value="<%= searchterm %>">
+        
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -47,38 +49,80 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <% if (users.length) { %>
+                                    <% var nr = (limit * (current - 1)) + 1; %>
+                                    <% users.forEach((user, index) => { %>
                                     <tr>
-                                        <td>183</td>
-                                        <td>John Doe</td>
-                                        <td>11-7-2014</td>
-                                        <td><span class="tag tag-success">Approved</span></td>
-                                        <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                                        <td><%= nr + index %></td>
+                                        <td><%= user.name %></td>
+                                        <td><%= user.email %></td>
+                                        <td><%= user.created_at %></td>
+                                        <td>
+                                            <a href="/user/edit/<%= user._id %>" class="btn btn-sm btn-primary">Edit</a>
+                                            <a href="/user/delete/<%= user._id %>" class="btn btn-sm btn-danger">Delete</a>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <td>219</td>
-                                        <td>Alexander Pierce</td>
-                                        <td>11-7-2014</td>
-                                        <td><span class="tag tag-warning">Pending</span></td>
-                                        <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>657</td>
-                                        <td>Bob Doe</td>
-                                        <td>11-7-2014</td>
-                                        <td><span class="tag tag-primary">Approved</span></td>
-                                        <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>175</td>
-                                        <td>Mike Doe</td>
-                                        <td>11-7-2014</td>
-                                        <td><span class="tag tag-danger">Denied</span></td>
-                                        <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                                    </tr>
+                                    <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5" class="text-center">
+                                                <span>No users found</span>
+                                            </td>
+                                        </tr>
+                                    <% } %>
                                 </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
+                        <div class="card-footer">
+                        <% if (pages > 0) { %>
+                            <ul class="pagination text-center float-right mb-0">
+                            <% if (current == 1) { %>
+                                <li class="disabled page-item">
+                                    <span class="page-link">First</span>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/users?page=1">First</a>
+                                </li>
+                            <% } %>
+                
+                            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                            <% if (i !== 1) { %>
+                                <li class="disabled page-item">
+                                    <a class="page-link">...</a>
+                                </li>
+                            <% } %>
+                
+                            <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                            <% if (i == current) { %>
+                                <li class="active page-item">
+                                    <a class="page-link"><%= i %></a>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/users?page=<%= i %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                            <% if (i == Number(current) + 4 && i < pages) { %>
+                                <li class="disabled page-item">
+                                    <a class="page-link">...</a>
+                                </li>
+                            <% } %>
+                            <% } %>
+                
+                            <% if (current == pages) { %>
+                                <li class="disabled page-item">
+                                    <a class="page-link">Last</a>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/users?page=<%= pages %>">Last</a>
+                                </li>
+                            <% } %>
+                            </ul>
+                            <% } %>
+                        </div>
                     </div>
                     <!-- /.card -->
                 </div>

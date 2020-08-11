@@ -2,6 +2,16 @@ var express = require('express');
 var app = express();
 var router = express.Router();
 const path = require('path');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./scratch');
+}
+
+const auth = require('../middlewares/auth'); //Middleware
+const User = require('../models/User'); //User Model
 
 app.use(express.static(__dirname + '/public'));
 
@@ -58,18 +68,72 @@ router.get('/admin-lte/dist/js/adminlte.js', (req, res) => {
 });
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.redirect('/login');
+router.get('/', auth, function(req, res, next) {
+  res.redirect('/dashboard');
 });
 
 router.get('/login', function(req, res, next) {
-  res.render('login');
+  const user = localStorage.getItem('user');
+
+  if (!user) {
+    res.render('login', {
+      error: '',
+      username: ''
+    });
+  } else {
+    res.redirect('/dashboard');
+  }
 });
 
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard', auth, (req, res) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+
   res.render('dashboard', {
-    activeTab: 'dashboard'
+    activeTab: 'dashboard',
+    userName: user.name
   });
 });
+
+router.post('/login', async (req, res) => {
+  const user = await User.findOne({
+    email: req.body.email
+  });
+
+  if (!user) {
+    res.render('login', {
+      error: 'Invalid credentials',
+      username: req.body.email
+    });
+  } else {
+    const match = await bcrypt.compare(req.body.password, user.password);
+
+    if (!match) {
+      res.render('login', {
+        error: 'Invalid credentials',
+        username: req.body.email
+      });
+    } else {
+      const token = jwt.sign({
+        id: user._id
+      }, process.env.SECRET);
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify({
+        name: user.name,
+        email: user.email,
+        created_at: user.created_at
+      }));
+
+      res.redirect('/dashboard');
+    }
+  }
+});
+
+router.post('/logout', auth, (req, res) => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+
+  res.redirect('/login');
+})
 
 module.exports = router;
