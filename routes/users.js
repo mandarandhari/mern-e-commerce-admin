@@ -73,7 +73,9 @@ router.get('/', auth, function(req, res, next) {
       current: result.page,
       pages: result.totalPages,
       limit: result.limit,
-      searchterm: req.query.searchterm ? req.query.searchterm : ''
+      searchterm: req.query.searchterm ? req.query.searchterm : '',
+      successMsg: req.flash('success'),
+      errorMsg: req.flash('error')
     });
   });
 });

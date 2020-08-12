@@ -67,6 +67,14 @@ router.get('/admin-lte/dist/js/adminlte.js', (req, res) => {
   res.sendFile(path.join(path.resolve(), '/node_modules/admin-lte/dist/js/adminlte.js'));
 });
 
+router.get('/toastr/build/toastr.min.css', (req, res) => {
+  res.sendFile(path.join(path.resolve(), '/node_modules//toastr/build/toastr.min.css'));
+});
+
+router.get('/toastr/build/toastr.min.js', (req, res) => {
+  res.sendFile(path.join(path.resolve(), '/node_modules//toastr/build/toastr.min.js'));
+});
+
 /* GET home page. */
 router.get('/', auth, function(req, res, next) {
   res.redirect('/dashboard');
@@ -119,6 +127,7 @@ router.post('/login', async (req, res) => {
 
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify({
+        _id: user._id,
         name: user.name,
         email: user.email,
         created_at: user.created_at

@@ -117,6 +117,7 @@ router.post(
 
             newUser.save();
 
+            req.flash('success', 'New user added');
             res.redirect('/users');
         }
     }
@@ -153,106 +154,99 @@ router.post(
     '/edit/:id',
     auth,
     [
-        body('name').trim().notEmpty().withMessage('Name is required'),
-        body('email').trim().isEmail().withMessage('Email is required')
+        body('name').trim().notEmpty().withMessage('Name is required')
     ],
     async (req, res) => {
-        const errors = validationResult(req);
-
         const userEdit = await User.findById(req.params.id);
 
-        const user = {
-            _id: userEdit._id,
-            name: req.body.name ? req.body.name : userEdit.name,
-            nameError: '',
-            email: req.body.email ? req.body.email : userEdit.email,
-            emailError: '',
-            password: '',
-            passwordError: '',
-            confirmPassword: '',
-            confirmPasswordError: '',
-            validation: true
-        };
+        if (userEdit) {
+            const errors = validationResult(req);
 
-        if (!errors.isEmpty()) {
-            errors.errors.forEach(error => {
-                switch (error.param) {
-                    case 'name':
-                        user.nameError = error.msg;
-                        break;
 
-                    case 'email':
-                        user.emailError = error.msg;
-                        break;
+            const user = {
+                _id: userEdit._id,
+                name: req.body.name != '' ? req.body.name : userEdit.name,
+                nameError: '',
+                email: userEdit.email,
+                emailError: '',
+                password: '',
+                passwordError: '',
+                confirmPassword: '',
+                confirmPasswordError: '',
+                validation: true
+            };
 
-                    case 'password':
-                        user.passwordError = error.msg;
-                        break;
-
-                    case 'confirmPassword':
-                        user.confirmPasswordError = error.msg;
-                        break;
-                    
-                    default:
-                        return;
-                }
-            });
-
-            user.validation = false;
-        }
-
-        if (user.email != '' && user.emailError == '') {
-            const isUserExists = await User.findOne({
-                $and: [
-                    {
-                        email: req.body.email
-                    },
-                    {
-                        _id: { $ne: req.params.id }
+            if (!errors.isEmpty()) {
+                errors.errors.forEach(error => {
+                    switch (error.param) {
+                        case 'name':
+                            user.nameError = error.msg;
+                            break;
+                        
+                        default:
+                            return;
                     }
-                ]
-                
-            });
+                });
 
-            if (isUserExists) {
-                user.emailError = 'User already exists';
                 user.validation = false;
-            }
-        }
-
-        if (req.body.password != '') {
-            if (req.body.confirmPassword != '') {
-                if (req.body.password != req.body.confirmPassword) {
-                    user.confirmPasswordError = 'Passwords not matching';
-                }
-            } else {
-                user.confirmPasswordError = 'Confirm password field is required';
-            }
-        }
-
-        if (!user.validation) {
-            const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
-            res.render('users/edit', {
-                activeTab: 'user',
-                user: user,
-                userName: loggedInUser.name
-            });
-        } else {
-            let updateData = {
-                name: req.body.name
             }
 
             if (req.body.password != '') {
-                const salt = await bcrypt.genSalt(10);
-                updateData.password = await bcrypt.hash(req.body.password, salt);
+                if (req.body.confirmPassword != '') {
+                    if (req.body.password != req.body.confirmPassword) {
+                        user.confirmPasswordError = 'Passwords not matching';
+
+                        user.validation = false;
+                    }
+                } else {
+                    user.confirmPasswordError = 'Confirm password field is required';
+
+                    user.validation = false;
+                }
             }
 
-            await User.findByIdAndUpdate(userEdit._id, updateData, { new: true });
+            if (!user.validation) {
+                const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
-            res.redirect('/users');
+                res.render('users/edit', {
+                    activeTab: 'user',
+                    user: user,
+                    userName: loggedInUser.name
+                });
+            } else {
+                let updateData = {
+                    name: req.body.name,
+                    updated_at: Date.now()
+                }
+
+                if (req.body.password != '') {
+                    const salt = await bcrypt.genSalt(10);
+                    updateData.password = await bcrypt.hash(req.body.password, salt);
+                }
+
+                await User.findByIdAndUpdate(userEdit._id, updateData, { new: true });
+
+                req.flash('success', 'User data updated');
+            }
+        } else {
+            req.flash('error', 'User does not exist');
         }
+
+        res.redirect('/users');
     }
 )
+
+router.post('/delete/:id', auth, async (req, res) => {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+        await User.findByIdAndDelete(req.params.id);
+        req.flash('success', 'User deleted');
+    } else {
+        req.flash('error', 'User does not exist');
+    }
+
+    res.redirect('/users');
+});
 
 module.exports = router;
