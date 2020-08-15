@@ -12,22 +12,11 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 router.get('/add', auth, (req, res) => {
-    const user = {
-        name: '',
-        nameError: '',
-        email: '',
-        emailError: '',
-        password: '',
-        passwordError: '',
-        confirmPassword: '',
-        confirmPasswordError: ''
-    };
-
     const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
     res.render('users/add', {
         activeTab: 'user',
-        user: user,
+        user: {},
         userName: loggedInUser.name
     });
 });
@@ -37,30 +26,43 @@ router.post(
     auth,
     [
         body('name').trim().notEmpty().withMessage('Name is required'),
-        body('email').trim().isEmail().withMessage('Email is required'),
-        body('password').isLength({min: 6}).withMessage('Password must be at least 6 characters long'),
-        body('confirmPassword').custom(async (confirmPassword, {req}) => {
-            if (req.body.password != confirmPassword) {
-                throw new Error('Password not matching');
+        body('email').trim()
+            .notEmpty().withMessage('Email is required')
+            .isEmail().withMessage('Please provide valid email')
+            .custom(async (email, {req}) => {
+                const isUserExists = await User.findOne({
+                    email: email
+                });
+
+                if (isUserExists) {
+                    throw new Error('User already exists');
+                } else {
+                    return true;
+                }
             }
-        })
+        ),
+        body('password').trim()
+            .notEmpty().withMessage('Password is required')
+            .isLength({min: 6}).withMessage('Password must be at least 6 characters long'),
+        body('confirmPassword').trim()
+            .notEmpty().withMessage('Confirm Password is required')
+            .custom(async (confirmPassword, {req}) => {
+                if (req.body.password != confirmPassword) {
+                    throw new Error('Password not matching');
+                } else {
+                    return true;
+                }
+            })
     ],
     async (req, res) => {
         const errors = validationResult(req);
         const user = {
             name: req.body.name,
-            nameError: '',
             email: req.body.email,
-            emailError: '',
-            password: '',
-            passwordError: '',
-            confirmPassword: '',
-            confirmPasswordError: '',
-            validation: true
         };
 
         if (!errors.isEmpty()) {
-            errors.errors.forEach(error => {
+            errors.array({onlyFirstError: true}).forEach(error => {
                 switch (error.param) {
                     case 'name':
                         user.nameError = error.msg;
@@ -83,21 +85,6 @@ router.post(
                 }
             });
 
-            user.validation = false;
-        }
-
-        if (user.email != '' && user.emailError == '') {
-            const isUserExists = await User.findOne({
-                email: user.email
-            });
-
-            if (isUserExists) {
-                user.emailError = 'User already exists';
-                user.validation = false;
-            }
-        }
-
-        if (!user.validation) {
             const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
             res.render('users/add', {
@@ -109,52 +96,72 @@ router.post(
             const salt = await bcrypt.genSalt(10);
             const password = await bcrypt.hash(req.body.password, salt);
 
-            const newUser = new User({
-                name: req.body.name,
-                email: req.body.email,
-                password: password
-            });
+            try {
+                const newUser = new User({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: password
+                });
 
-            newUser.save();
+                await newUser.save();
 
-            req.flash('success', 'New user added');
+                req.flash('success', 'New user added');
+            } catch(e) {
+                req.flash('error', 'Something went wrong');
+            }
             res.redirect('/users');
         }
     }
 );
 
 router.get('/edit/:id', auth, async (req, res) => {
-    let user = {
-        name: '',
-        nameError: '',
-        email: '',
-        emailError: '',
-        password: '',
-        passwordError: '',
-        confirmPassword: '',
-        confirmPasswordError: ''
-    };
-
     const userEdit = await User.findById(req.params.id);
 
-    user.name = userEdit.name;
-    user.email = userEdit.email;
-    user._id = userEdit._id;
+    if (userEdit) {
+        let user = {
+            _id: userEdit._id,
+            name: userEdit.name,
+            email: userEdit.email
+        };
 
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
+        const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
-    res.render('users/edit', {
-        activeTab: 'user',
-        user: user,
-        userName: loggedInUser.name
-    });
+        res.render('users/edit', {
+            activeTab: 'user',
+            user: user,
+            userName: loggedInUser.name
+        });
+    } else {
+        req.flash('error', 'Something went wrong');
+        res.redirect('/users');
+    }
 });
 
 router.post(
     '/edit/:id',
     auth,
     [
-        body('name').trim().notEmpty().withMessage('Name is required')
+        body('name').trim().notEmpty().withMessage('Name is required'),
+        body('password').trim().custom((password, {req}) => {
+            if (password !== "" && password.length < 6) {
+                throw new Error("Password must be at least 6 characters long");
+            } else {
+                return true;
+            }
+        }),
+        body('confirmPassword').trim().custom((confirmPassword, {req}) => {
+            if (req.body.password !== '') {
+                if (confirmPassword === '') {
+                    throw new Error('Confirm Password is required');
+                } else if (confirmPassword !== req.body.password) {
+                    throw new Error('Passwords not matching');
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        })
     ],
     async (req, res) => {
         const userEdit = await User.findById(req.params.id);
@@ -166,46 +173,30 @@ router.post(
             const user = {
                 _id: userEdit._id,
                 name: req.body.name != '' ? req.body.name : userEdit.name,
-                nameError: '',
                 email: userEdit.email,
-                emailError: '',
-                password: '',
-                passwordError: '',
-                confirmPassword: '',
-                confirmPasswordError: '',
                 validation: true
             };
 
             if (!errors.isEmpty()) {
-                errors.errors.forEach(error => {
+                errors.array({ onlyFirstError: true }).forEach(error => {
                     switch (error.param) {
                         case 'name':
                             user.nameError = error.msg;
                             break;
-                        
+
+                        case 'password':
+                            user.passwordError = error.msg;
+                            break;
+
+                        case 'confirmPassword':
+                            user.confirmPasswordError = error.msg;
+                            break;
+
                         default:
                             return;
                     }
                 });
 
-                user.validation = false;
-            }
-
-            if (req.body.password != '') {
-                if (req.body.confirmPassword != '') {
-                    if (req.body.password != req.body.confirmPassword) {
-                        user.confirmPasswordError = 'Passwords not matching';
-
-                        user.validation = false;
-                    }
-                } else {
-                    user.confirmPasswordError = 'Confirm password field is required';
-
-                    user.validation = false;
-                }
-            }
-
-            if (!user.validation) {
                 const loggedInUser = JSON.parse(localStorage.getItem('user'));
 
                 res.render('users/edit', {

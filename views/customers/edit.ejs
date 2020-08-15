@@ -1,0 +1,101 @@
+<%- include('../layouts/header') -%>
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <div class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1 class="m-0 text-dark">Customer</h1>
+                            </div><!-- /.col -->
+                        </div><!-- /.row -->
+                    </div><!-- /.container-fluid -->
+                </div>
+                <!-- /.content-header -->
+
+                <!-- Main content -->
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- left column -->
+                            <div class="col-md-8 m-auto">
+                                <!-- general form elements -->
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Edit</h3>
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <!-- form start -->
+                                    <form role="form" method="POST" action="/customer/edit/<%= customer._id %>">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="name">Firstname</label>
+                                                <input type="text" class="form-control <% if (typeof customer.firstNameError !== 'undefined' && customer.firstNameError && customer.firstNameError.length) { %> is-invalid <% } %>" name="firstName" id="firstName" placeholder="Enter firstname" value="<%= customer.firstName %>">
+                                                <% if (typeof customer.firstNameError !== 'undefined' && customer.firstNameError && customer.firstNameError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= customer.firstNameError %></span>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Lastname</label>
+                                                <input type="text" class="form-control <% if (typeof customer.lastNameError !== 'undefined' && customer.lastNameError && customer.lastNameError.length) { %> is-invalid <% } %>" name="lastName" id="lastName" placeholder="Enter lastname" value="<%= customer.lastName %>">
+                                                <% if (typeof customer.lastNameError !== 'undefined' && customer.lastNameError && customer.lastNameError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= customer.lastNameError %></span>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="email">Email</label>
+                                                <input type="email" class="form-control <% if (typeof customer.emailError !== 'undefined' && customer.emailError && customer.emailError.length) { %> is-invalid <% } %>" name="email" id="email" placeholder="Enter email" value="<%= customer.email %>" disabled>
+                                                <% if (typeof customer.emailError !== 'undefined' && customer.emailError && customer.emailError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= customer.emailError%></span>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="email">Phone</label>
+                                                <input type="text" class="form-control <% if (typeof customer.phoneError !== 'undefined' && customer.phoneError && customer.phoneError.length) { %> is-invalid <% } %>" name="phone" id="phone" placeholder="Enter phone number" value="<%= customer.phone %>">
+                                                <% if (typeof customer.phoneError !== 'undefined' && customer.phoneError && customer.phoneError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= customer.phoneError%></span>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password">Password</label>
+                                                <input type="password" class="form-control <% if (typeof customer.passwordError && customer.passwordError && customer.passwordError.length) { %> is-invalid <% } %>" name="password" id="password" placeholder="Password">
+                                                <% if (typeof customer.passwordError && customer.passwordError && customer.passwordError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= customer.passwordError %></span>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group mb-0">
+                                                <label for="confirmPassword">Confirm Password</label>
+                                                <input type="password" class="form-control <% if (typeof customer.confirmPasswordError !== 'undefined' && customer.confirmPasswordError && customer.confirmPasswordError.length) { %> is-invalid <% } %>" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
+                                                <% if (typeof customer.confirmPasswordError !== 'undefined' && customer.confirmPasswordError && customer.confirmPasswordError.length) { %>
+                                                <div class="invalid-feedback" role="alert">
+                                                    <span><%= customer.confirmPasswordError %></span>
+                                                </div>
+                                                <% } %> 
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                        
+                                        <div class="card-footer">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card -->
+                            </div>
+                        </div>
+                    </div><!-- /.container-fluid -->
+                </div>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+<%- include('../layouts/footer') -%>

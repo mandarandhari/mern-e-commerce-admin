@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Users</h1>
+                    <h1 class="m-0 text-dark">Customers</h1>
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -24,7 +24,7 @@
                             <h3 class="card-title">List</h3>
       
                             <div class="card-tools">
-                                <a href="/user/add" class="btn btn-primary btn-sm float-left">Add User</a>
+                                <a href="/customer/add" class="btn btn-primary btn-sm float-left">Add Customer</a>
                                 <form action="" method="get" class="float-right">
                                     <div class="input-group input-group-sm mt-0 ml-2" style="width: 150px;">
                                         <input type="text" name="searchterm" class="form-control float-right" placeholder="Search" value="<%= searchterm %>">
@@ -44,29 +44,31 @@
                                         <th>Nr.</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Phone</th>
                                         <th>Created On</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (users.length) { %>
+                                    <% if (customers.length) { %>
                                     <% var nr = (limit * (current - 1)) + 1; %>
-                                    <% users.forEach((user, index) => { %>
+                                    <% customers.forEach((customer, index) => { %>
                                     <tr>
                                         <td><%= nr + index %></td>
-                                        <td><%= user.name %></td>
-                                        <td><%= user.email %></td>
-                                        <td><%= user.created_at %></td>
+                                        <td><%= customer.firstName + " " + customer.lastName %></td>
+                                        <td><%= customer.email %></td>
+                                        <td><%= customer.phone %></td>
+                                        <td><%= customer.created_at %></td>
                                         <td>
-                                            <a href="/user/edit/<%= user._id %>" class="btn btn-sm btn-primary">Edit</a>
-                                            <button type="button" data-href="/user/delete/<%= user._id %>" class="btn btn-sm btn-danger delete-user-btn" data-toggle="modal" data-target="#deleteUserModal">Delete</button>
+                                            <a href="/customer/edit/<%= customer._id %>" class="btn btn-sm btn-primary">Edit</a>
+                                            <button type="button" data-href="/customer/delete/<%= customer._id %>" class="btn btn-sm btn-danger delete-customer-btn" data-toggle="modal" data-target="#deleteCustomerModal">Delete</button>
                                         </td>
                                     </tr>
                                     <% }) %>
                                     <% } else { %>
                                         <tr>
                                             <td colspan="5" class="text-center">
-                                                <span>No users found</span>
+                                                <span>No customers found</span>
                                             </td>
                                         </tr>
                                     <% } %>
@@ -83,7 +85,7 @@
                                 </li>
                             <% } else { %>
                                 <li class="page-item">
-                                <a class="page-link" href="/users?page=1<% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>">First</a>
+                                <a class="page-link" href="/customers?page=1<% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>">First</a>
                                 </li>
                             <% } %>
                 
@@ -101,7 +103,7 @@
                                 </li>
                             <% } else { %>
                                 <li class="page-item">
-                                    <a class="page-link" href="/users?page=<%= i %><% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>"><%= i %></a>
+                                    <a class="page-link" href="/customers?page=<%= i %><% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>"><%= i %></a>
                                 </li>
                             <% } %>
                             <% if (i == Number(current) + 4 && i < pages) { %>
@@ -117,7 +119,7 @@
                                 </li>
                             <% } else { %>
                                 <li class="page-item">
-                                    <a class="page-link" href="/users?page=<%= pages %><% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>">Last</a>
+                                    <a class="page-link" href="/customers?page=<%= pages %><% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>">Last</a>
                                 </li>
                             <% } %>
                             </ul>
@@ -133,20 +135,20 @@
 </div>
 <!-- /.content-wrapper -->
 
-<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
+                <h5 class="modal-title" id="deleteCustomerModalLabel">Delete Customer</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this user?</p>
+                <p>Are you sure you want to delete this customer?</p>
             </div>
             <div class="modal-footer">
-                <form method="post" action="" id="deleteUserForm">
+                <form method="post" action="" id="deleteCustomerForm">
                     <button type="submit" class="btn btn-danger">Yes</button>
                 </form>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

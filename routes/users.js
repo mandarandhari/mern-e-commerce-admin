@@ -29,7 +29,7 @@ router.get('/', auth, function(req, res, next) {
     searchterm = {
       $and: [
         {
-          _id: loggedInUser._id
+          _id: { $ne: loggedInUser._id }
         },
         {
           $or: [
