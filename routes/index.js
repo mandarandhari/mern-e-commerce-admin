@@ -68,12 +68,16 @@ router.get('/admin-lte/dist/js/adminlte.js', (req, res) => {
 });
 
 router.get('/toastr/build/toastr.min.css', (req, res) => {
-  res.sendFile(path.join(path.resolve(), '/node_modules//toastr/build/toastr.min.css'));
+  res.sendFile(path.join(path.resolve(), '/node_modules/toastr/build/toastr.min.css'));
 });
 
 router.get('/toastr/build/toastr.min.js', (req, res) => {
-  res.sendFile(path.join(path.resolve(), '/node_modules//toastr/build/toastr.min.js'));
+  res.sendFile(path.join(path.resolve(), '/node_modules/toastr/build/toastr.min.js'));
 });
+
+router.get('/ckeditor/ckeditor.js', (req, res) => {
+  res.sendFile(path.join(path.resolve(), '/node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js'));
+})
 
 /* GET home page. */
 router.get('/', auth, function(req, res, next) {

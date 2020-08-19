@@ -226,7 +226,6 @@ router.post(
                     userName: loggedInUser.name
                 });
             } else {
-                console.log(customer);
                 const customerData = {
                     first_name: customer.firstName,
                     last_name: customer.lastName,

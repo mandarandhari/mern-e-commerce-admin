@@ -1,0 +1,116 @@
+<%- include('../layouts/header') -%>
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <div class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1 class="m-0 text-dark">Product</h1>
+                            </div><!-- /.col -->
+                        </div><!-- /.row -->
+                    </div><!-- /.container-fluid -->
+                </div>
+                <!-- /.content-header -->
+
+                <!-- Main content -->
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- left column -->
+                            <div class="col-md-8 m-auto">
+                                <!-- general form elements -->
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Add</h3>
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <!-- form start -->
+                                    <script src="/ckeditor/ckeditor.js"></script>
+                                    <form role="form" method="POST" action="/product/add" enctype="multipart/form-data" id="add-product-form">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="title">Title</label>
+                                                <input type="text" class="form-control" name="title" placeholder="Title" value="<% if ( typeof product.title !== 'undefined' ) { %><%= product.title %><% } %>">
+                                                <% if (typeof product.titleError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.titleError %></p>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="description">Description</label>
+                                                <textarea name="description" id="description" style="display: none;" cols="10"><% if (typeof product.description !== 'undefined') { %><%= product.description %><% } %></textarea>
+                                                <script>
+                                                    ClassicEditor
+                                                        .create(document.querySelector('#description'))
+                                                        .catch(error => {
+                                                            console.log(error);
+                                                        });
+                                                </script>
+                                                <% if (typeof product.descriptionError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.descriptionError %></p>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="size">Size</label>
+                                                <div class="row <% if (typeof product.sizeError === 'undefined' ) { %>mb-3<% } %>" style="width: 100%">
+                                                    <div class="col-md-6">
+                                                        <input type="checkbox" name="size[s]" id="" class="size-checkbox" <% if (typeof product.size !== 'undefined' && typeof product.size.s !== 'undefined' && product.size.s) { %>checked<% } %>> <span>S</span>
+                                                        <input type="checkbox" name="size[m]" id="" class="ml-3 size-checkbox" <% if (typeof product.size !== 'undefined' && typeof product.size.m !== 'undefined' && product.size.m) { %>checked<% } %>> <span>M</span>
+                                                        <input type="checkbox" name="size[l]" id="" class="ml-3 size-checkbox" <% if (typeof product.size !== 'undefined' && typeof product.size.l !== 'undefined' && product.size.l) { %>checked<% } %>> <span>L</span>
+                                                        <input type="checkbox" name="size[xl]" id="" class="ml-3 size-checkbox" <% if (typeof product.size !== 'undefined' && typeof product.size.xl !== 'undefined' && product.size.xl) { %>checked<% } %>> <span>XL</span>
+                                                    </div>
+                                                </div>
+                                                <% if (typeof product.sizeError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.sizeError %></p>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="originalPrice">Original Price</label>
+                                                <input type="text" class="form-control original-price" name="originalPrice" placeholder="Original Price" value="<% if (typeof product.originalPrice !== 'undefined') { %><%= product.originalPrice %><% } %>">
+                                                <% if (typeof product.originalPriceError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.originalPriceError %></p>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="discount">Discount(%)</label>
+                                                <input type="number" class="form-control discount" name="discount" placeholder="Discount" max="99" min="0" value="<% if (typeof product.discount !== 'undefined') { %><%= product.discount %><% } else { %>0<% } %>">
+                                                <% if (typeof product.discountError !== 'undefined') { %>
+                                                <p class="text-danger"><% product.discountError %></p>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="price">Price after discount</label>
+                                                <input type="text" class="form-control price" name="price" placeholder="Price after discount" value="<% if (typeof product.price !== 'undefined') { %><%= product.price %><% } %>" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="productImage">Image(large)</label>
+                                                <input type="file" class="form-control" name="productImage">
+                                                <% if (typeof product.imageError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.imageError %></p>
+                                                <% } %>
+                                            </div>
+                                            <div class="form-group mb-0">
+                                                <input type="checkbox" name="showOnBanner" id="" <% if (typeof product.showOnBanner !== 'undefined') { %>checked<% } %>> <span><strong>Show on banner</strong></span>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                        
+                                        <div class="card-footer">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card -->
+                            </div>
+                        </div>
+                    </div><!-- /.container-fluid -->
+                </div>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+            <style>
+                .ck-editor__editable {
+                    height: 200px;
+                }
+            </style>
+<%- include('../layouts/footer') -%>
