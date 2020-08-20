@@ -6,7 +6,7 @@
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0 text-dark">Customer</h1>
+                                <h1 class="m-0 text-dark">Product</h1>
                             </div><!-- /.col -->
                         </div><!-- /.row -->
                     </div><!-- /.container-fluid -->
@@ -26,61 +26,74 @@
                                     </div>
                                     <!-- /.card-header -->
                                     <!-- form start -->
-                                    <form role="form" method="POST" action="/customer/edit/<%= customer._id %>">
+                                    <script src="/ckeditor/ckeditor.js"></script>
+                                    <form role="form" method="POST" action="/product/edit/<%= product._id %>" enctype="multipart/form-data" id="add-product-form">
                                         <div class="card-body">
                                             <div class="form-group">
-                                                <label for="name">Firstname</label>
-                                                <input type="text" class="form-control <% if (typeof customer.firstNameError !== 'undefined' && customer.firstNameError && customer.firstNameError.length) { %> is-invalid <% } %>" name="firstName" id="firstName" placeholder="Enter firstname" value="<%= customer.firstName %>">
-                                                <% if (typeof customer.firstNameError !== 'undefined' && customer.firstNameError && customer.firstNameError.length) { %>
-                                                <div class="invalid-feedback" role="alert">
-                                                    <span><%= customer.firstNameError %></span>
-                                                </div>
+                                                <label for="title">Title</label>
+                                                <input type="text" class="form-control <% if (typeof product.titleError !== 'undefined') { %>is-invalid<% } %>" name="title" placeholder="Title" value="<%= product.title %>">
+                                                <% if (typeof product.titleError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.titleError %></p>
                                                 <% } %>
                                             </div>
                                             <div class="form-group">
-                                                <label for="name">Lastname</label>
-                                                <input type="text" class="form-control <% if (typeof customer.lastNameError !== 'undefined' && customer.lastNameError && customer.lastNameError.length) { %> is-invalid <% } %>" name="lastName" id="lastName" placeholder="Enter lastname" value="<%= customer.lastName %>">
-                                                <% if (typeof customer.lastNameError !== 'undefined' && customer.lastNameError && customer.lastNameError.length) { %>
-                                                <div class="invalid-feedback" role="alert">
-                                                    <span><%= customer.lastNameError %></span>
-                                                </div>
+                                                <label for="description">Description</label>
+                                                <textarea name="description" id="description" style="display: none;" cols="10"><%= product.description %></textarea>
+                                                <script>
+                                                    ClassicEditor
+                                                        .create(document.querySelector('#description'))
+                                                        .catch(error => {
+                                                            console.log(error);
+                                                        });
+                                                </script>
+                                                <% if (typeof product.descriptionError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.descriptionError %></p>
                                                 <% } %>
                                             </div>
                                             <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input type="email" class="form-control <% if (typeof customer.emailError !== 'undefined' && customer.emailError && customer.emailError.length) { %> is-invalid <% } %>" name="email" id="email" placeholder="Enter email" value="<%= customer.email %>" disabled>
-                                                <% if (typeof customer.emailError !== 'undefined' && customer.emailError && customer.emailError.length) { %>
-                                                <div class="invalid-feedback" role="alert">
-                                                    <span><%= customer.emailError%></span>
+                                                <label for="size">Size</label>
+                                                <div class="row <% if (typeof product.sizeError === 'undefined' ) { %>mb-3<% } %>" style="width: 100%">
+                                                    <div class="col-md-6">
+                                                        <input type="checkbox" name="size[s]" id="" class="size-checkbox" <% if (product.size[0].s) { %>checked<% } %>> <span>S</span>
+                                                        <input type="checkbox" name="size[m]" id="" class="ml-3 size-checkbox" <% if (product.size[0].m) { %>checked<% } %>> <span>M</span>
+                                                        <input type="checkbox" name="size[l]" id="" class="ml-3 size-checkbox" <% if (product.size[0].l) { %>checked<% } %>> <span>L</span>
+                                                        <input type="checkbox" name="size[xl]" id="" class="ml-3 size-checkbox" <% if (product.size[0].xl) { %>checked<% } %>> <span>XL</span>
+                                                    </div>
                                                 </div>
+                                                <% if (typeof product.sizeError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.sizeError %></p>
                                                 <% } %>
                                             </div>
                                             <div class="form-group">
-                                                <label for="email">Phone</label>
-                                                <input type="text" class="form-control <% if (typeof customer.phoneError !== 'undefined' && customer.phoneError && customer.phoneError.length) { %> is-invalid <% } %>" name="phone" id="phone" placeholder="Enter phone number" value="<%= customer.phone %>">
-                                                <% if (typeof customer.phoneError !== 'undefined' && customer.phoneError && customer.phoneError.length) { %>
-                                                <div class="invalid-feedback" role="alert">
-                                                    <span><%= customer.phoneError%></span>
-                                                </div>
+                                                <label for="originalPrice">Original Price</label>
+                                                <input type="text" class="form-control original-price <% if (typeof product.originalPriceError !== 'undefined') { %>is-invalid<% } %>" name="originalPrice" placeholder="Original Price" value="<%= product.original_price %>">
+                                                <% if (typeof product.originalPriceError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.originalPriceError %></p>
                                                 <% } %>
                                             </div>
                                             <div class="form-group">
-                                                <label for="password">Password</label>
-                                                <input type="password" class="form-control <% if (typeof customer.passwordError && customer.passwordError && customer.passwordError.length) { %> is-invalid <% } %>" name="password" id="password" placeholder="Password">
-                                                <% if (typeof customer.passwordError && customer.passwordError && customer.passwordError.length) { %>
-                                                <div class="invalid-feedback" role="alert">
-                                                    <span><%= customer.passwordError %></span>
-                                                </div>
+                                                <label for="discount">Discount(%)</label>
+                                                <input type="number" class="form-control discount <% if (typeof product.discountError !== 'undefined') { %>is-invalid<% } %>" name="discount" placeholder="Discount" max="99" min="0" value="<%= product.discount %>">
+                                                <% if (typeof product.discountError !== 'undefined') { %>
+                                                <p class="text-danger"><% product.discountError %></p>
                                                 <% } %>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="price">Price after discount</label>
+                                                <input type="text" class="form-control price" name="price" placeholder="Price after discount" value="<%= product.price %>" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="productImage">Image</label>
+                                                <input type="file" class="form-control product-image <% if (typeof product.imageError !== 'undefined') { %>is-invalid<% } %>" name="productImage">
+                                                <% if (typeof product.imageError !== 'undefined') { %>
+                                                <p class="text-danger"><%= product.imageError %></p>
+                                                <% } %>
+                                                <div class="float-left product-img mb-3">
+                                                    <img src="<%= product.image_url %>" alt="" width="20%">
+                                                </div>
                                             </div>
                                             <div class="form-group mb-0">
-                                                <label for="confirmPassword">Confirm Password</label>
-                                                <input type="password" class="form-control <% if (typeof customer.confirmPasswordError !== 'undefined' && customer.confirmPasswordError && customer.confirmPasswordError.length) { %> is-invalid <% } %>" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
-                                                <% if (typeof customer.confirmPasswordError !== 'undefined' && customer.confirmPasswordError && customer.confirmPasswordError.length) { %>
-                                                <div class="invalid-feedback" role="alert">
-                                                    <span><%= customer.confirmPasswordError %></span>
-                                                </div>
-                                                <% } %> 
+                                                <input type="checkbox" name="showOnBanner" id="" <% if (product.show_on_banner) { %>checked<% } %>> <span><strong>Show on banner</strong></span>
                                             </div>
                                         </div>
                                         <!-- /.card-body -->
@@ -98,4 +111,9 @@
                 <!-- /.content -->
             </div>
             <!-- /.content-wrapper -->
+            <style>
+                .ck-editor__editable {
+                    height: 200px;
+                }
+            </style>
 <%- include('../layouts/footer') -%>

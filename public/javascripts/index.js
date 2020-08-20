@@ -7,6 +7,10 @@ $(document).ready(function () {
         $('#deleteCustomerForm').attr('action', $(this).attr('data-href'));
     });
 
+    $(document).on('click', '.delete-product-btn', function () {
+        $('#deleteProductForm').attr('action', $(this).attr('data-href'));
+    });
+
     $(document).on('change', '.original-price, .discount', function (e) {
         if ( $('.original-price').val() !== '' && !$.isNumeric($('.original-price').val()) ) {
             alert("Please enter valid value of product original price");
@@ -28,5 +32,17 @@ $(document).ready(function () {
                 parseInt($('.original-price').val()) - ( parseInt($('.original-price').val()) * ( discount / 100 ) )
             );
         }
-    })
+    });
+
+    $(document).on('change', '.product-image', function (e) {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+
+        reader.onloadend = function () {
+            $('.product-img img').attr('src', reader.result);
+            $('.product-img').show();
+        };
+
+        reader.readAsDataURL(file);
+    });
 });
