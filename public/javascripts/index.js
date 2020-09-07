@@ -11,6 +11,10 @@ $(document).ready(function () {
         $('#deleteProductForm').attr('action', $(this).attr('data-href'));
     });
 
+    $(document).on('click', '.delete-order-btn', function () {
+        $('#deleteOrderForm').attr('action', $(this).attr('data-href'));
+    });
+
     $(document).on('change', '.original-price, .discount', function (e) {
         if ( $('.original-price').val() !== '' && !$.isNumeric($('.original-price').val()) ) {
             alert("Please enter valid value of product original price");
@@ -29,7 +33,9 @@ $(document).ready(function () {
             var discount =  $('.discount').val() !== '' ? $('.discount').val() : 0;
 
             $('.price').val(
-                parseInt($('.original-price').val()) - ( parseInt($('.original-price').val()) * ( discount / 100 ) )
+                Math.ceil(
+                    parseInt($('.original-price').val()) - ( parseInt($('.original-price').val()) * ( discount / 100 ) )
+                )
             );
         }
     });
@@ -44,5 +50,23 @@ $(document).ready(function () {
         };
 
         reader.readAsDataURL(file);
+    });
+
+    $(document).on('change', '#orderStatus', function() {
+        $.ajax({
+            url: location.origin + '/order/change_status/' + $('.order_id').val(),
+            data: {
+                status: $(this).children('option:selected').val()
+            },
+            dataType: 'json',
+            type: 'post',
+            success: function (response) {
+                if (response.status) {
+                    toastr.success('Order status updated successfully');
+                } else {
+                    toastr.error('Something went wrong');
+                }
+            }
+        })
     });
 });

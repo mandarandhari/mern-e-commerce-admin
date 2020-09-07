@@ -5,15 +5,8 @@ var moment = require('moment');
 const auth = require('../middlewares/auth'); //Auth Middleware
 const User = require('../models/User');
 
-if (typeof localStorage === "undefined" || localStorage === null) {
-  var LocalStorage = require('node-localstorage').LocalStorage;
-  localStorage = new LocalStorage('./scratch');
-}
-
 /* GET users listing. */
 router.get('/', auth, function(req, res, next) {
-  const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
   let offset = 1;
   const limit = 10;
 
@@ -22,14 +15,14 @@ router.get('/', auth, function(req, res, next) {
   }
 
   var searchterm = {
-    _id: { $ne: loggedInUser._id }
+    _id: { $ne: req.session.user._id }
   };
 
   if (req.query.searchterm) {
     searchterm = {
       $and: [
         {
-          _id: { $ne: loggedInUser._id }
+          _id: { $ne: req.session.user._id }
         },
         {
           $or: [
@@ -68,7 +61,7 @@ router.get('/', auth, function(req, res, next) {
 
     res.render('users/list', {
       activeTab: 'users',
-      userName: loggedInUser.name,
+      userName: req.session.user.name,
       users: users,
       current: result.page,
       pages: result.totalPages,

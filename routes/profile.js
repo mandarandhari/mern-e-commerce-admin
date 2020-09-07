@@ -6,14 +6,7 @@ const auth = require('../middlewares/auth');
 
 const User = require('../models/User');
 
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require('node-localstorage').LocalStorage;
-    localStorage = new LocalStorage('./scratch');
-}
-
 router.get('/', auth, async (req, res) => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
     let user = {
         name: '',
         nameError: '',
@@ -25,13 +18,13 @@ router.get('/', auth, async (req, res) => {
         confirmPasswordError: ''
     };
 
-    user.name = loggedInUser.name;
-    user.email = loggedInUser.email;
+    user.name = req.session.user.name;
+    user.email = req.session.user.email;
 
     res.render('profile', {
         activeTab: 'profile',
         user: user,
-        userName: loggedInUser.name,
+        userName: req.session.user.name,
         successMsg: req.flash('success')
     });
 });
@@ -43,13 +36,11 @@ router.post(
         body('name').not().isEmpty().withMessage('Name is required')
     ],
     async (req, res) => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
     let user = {
-        _id: loggedInUser._id,
-        name: req.body.name != '' ? req.body.name : loggedInUser.name,
+        _id: req.session.user._id,
+        name: req.body.name != '' ? req.body.name : req.session.user.name,
         nameError: '',
-        email: loggedInUser.email,
+        email: req.session.user.email,
         emailError: '',
         password: '',
         passwordError: '',
@@ -110,13 +101,13 @@ router.post(
         }
 
         const updatedUser = await User.findByIdAndUpdate(user._id, profileData, { new: true });
-        
-        localStorage.setItem('user', JSON.stringify({
+
+        req.session.user = {
             _id: updatedUser._id,
             name: updatedUser.name,
             email: updatedUser.email,
             created_at: updatedUser.created_at
-        }));
+        }
 
         req.flash('success', 'Profile updated');
 

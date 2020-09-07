@@ -5,18 +5,11 @@ const bcrypt = require('bcrypt');
 const auth = require('../middlewares/auth');
 const Customer = require('../models/Customer');
 
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require('node-localstorage').LocalStorage;
-    localStorage = new LocalStorage('./scratch');
-}
-
 router.get('/add', auth, (req,res) => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
     res.render('customers/add', {
         activeTab: 'customer',
         customer: {},
-        userName: loggedInUser.name
+        userName: req.session.user.name
     });
 });
 
@@ -59,8 +52,6 @@ router.post(
             phone: req.body.phone
         };
 
-        const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -98,7 +89,7 @@ router.post(
             res.render('customers/add', {
                 activeTab: 'customer',
                 customer: customer,
-                userName: loggedInUser.name
+                userName: req.session.user.name
             });
         } else {
             const salt = await bcrypt.genSalt(10);
@@ -137,12 +128,10 @@ router.get('/edit/:id', auth, async (req, res) => {
             phone: editCustomer.phone
         };
 
-        const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
         res.render('customers/edit', {
             activeTab: customer,
             customer: customer,
-            userName: loggedInUser.name
+            userName: req.session.user.name
         });
     } else {
         req.flash('error', 'Customer does not exists');
@@ -218,12 +207,10 @@ router.post(
                     }
                 });
 
-                const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
                 res.render('customers/edit', {
                     activeTab: 'customer',
                     customer: customer,
-                    userName: loggedInUser.name
+                    userName: req.session.user.name
                 });
             } else {
                 const customerData = {

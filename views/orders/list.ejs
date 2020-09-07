@@ -1,0 +1,159 @@
+<%- include('../layouts/header') -%>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Orders</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">List</h3>
+      
+                            <div class="card-tools">
+                                <form action="" method="get" class="float-right">
+                                    <div class="input-group input-group-sm mt-0 ml-2" style="width: 150px;">
+                                        <input type="text" name="searchterm" class="form-control float-right" placeholder="Search" value="<%= searchterm %>">
+        
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Nr.</th>
+                                        <th>Customer Name</th>
+                                        <th>Order ID</th>
+                                        <th>status</th>
+                                        <th>Created On</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (orders.length) { %>
+                                    <% var nr = (limit * (current - 1)) + 1; %>
+                                    <% orders.forEach((order, index) => { %>
+                                    <tr>
+                                        <td><%= nr + index %></td>
+                                        <td><%= order.customer_name %></td>
+                                        <td><%= order.order_id %></td>
+                                        <td><%= order.status %></td>
+                                        <td><%= order.created_at %></td>
+                                        <td>
+                                            <a href="/order/view/<%= order.order_id %>" class="btn btn-sm btn-primary">View</a>
+                                            <button type="button" data-href="/order/delete/<%= order.order_id %>" class="btn btn-sm btn-danger delete-order-btn" data-toggle="modal" data-target="#deleteOrderModal">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <span>No orders found</span>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                        <% if (pages > 0) { %>
+                            <ul class="pagination text-center float-right mb-0">
+                            <% if (current == 1) { %>
+                                <li class="disabled page-item">
+                                    <span class="page-link">First</span>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                <a class="page-link" href="/orders?page=1<% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>">First</a>
+                                </li>
+                            <% } %>
+                
+                            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                            <% if (i !== 1) { %>
+                                <li class="disabled page-item">
+                                    <a class="page-link">...</a>
+                                </li>
+                            <% } %>
+                
+                            <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                            <% if (i == current) { %>
+                                <li class="active page-item">
+                                    <a class="page-link"><%= i %></a>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/orders?page=<%= i %><% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                            <% if (i == Number(current) + 4 && i < pages) { %>
+                                <li class="disabled page-item">
+                                    <a class="page-link">...</a>
+                                </li>
+                            <% } %>
+                            <% } %>
+                
+                            <% if (current == pages) { %>
+                                <li class="disabled page-item">
+                                    <a class="page-link">Last</a>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/orders?page=<%= pages %><% if (searchterm.length) { %>&searchterm=<%= searchterm %><% } %>">Last</a>
+                                </li>
+                            <% } %>
+                            </ul>
+                            <% } %>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<div class="modal fade" id="deleteOrderModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteOrderModalLabel">Delete Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this order?</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="" id="deleteUserForm">
+                    <button type="submit" class="btn btn-danger">Yes</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../layouts/footer') -%>

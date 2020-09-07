@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const { now } = require('moment');
 
 const ProductSchema = new mongoose.Schema({
     title: {

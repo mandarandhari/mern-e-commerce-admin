@@ -4,14 +4,7 @@ const moment = require('moment');
 const auth = require('../middlewares/auth');
 const Product = require('../models/Product');
 
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require('node-localstorage').LocalStorage;
-    localStorage = new LocalStorage('./scratch');
-}
-
 router.get('/', auth, async (req, res) => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
     let offset = 0;
     const limit = 10;
 
@@ -48,7 +41,7 @@ router.get('/', auth, async (req, res) => {
 
         res.render('products/list', {
             activeTab: 'products',
-            userName: loggedInUser.name,
+            userName: req.session.user.name,
             products: products,
             searchterm: req.query.searchterm ? req.query.searchterm : '',
             current: result.page,

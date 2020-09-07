@@ -6,13 +6,7 @@ const fetch = require('node-fetch');
 const { body, validationResult } = require('express-validator');
 
 const auth = require('../middlewares/auth');
-const { localsName } = require('ejs');
 const Product = require('../models/Product');
-
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require('node-localstorage').LocalStorage;
-    localStorage = new LocalStorage('./scratch');
-}
 
 const multerConfig = {
     storage: multer.diskStorage({
@@ -24,11 +18,9 @@ const multerConfig = {
 }
 
 router.get('/add', auth, (req, res) => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
     res.render('products/add', {
         activeTab: 'product',
-        userName: loggedInUser.name,
+        userName: req.session.user.name,
         product: {}
     });
 });
@@ -72,7 +64,7 @@ router.post(
             },
             originalPrice: req.body.originalPrice,
             discount: req.body.discount,
-            price: parseInt(req.body.originalPrice) - ( parseInt(req.body.originalPrice) * ( parseInt(req.body.discount) / 100 ) ),
+            price: Math.floor( parseInt(req.body.originalPrice) - ( parseInt(req.body.originalPrice) * ( parseInt(req.body.discount) / 100 ) ) ),
             showOnBanner: req.body.showOnBanner  === 'on' ? true : false
         };
 
@@ -82,8 +74,6 @@ router.post(
             'image/jpeg',
             'image/png'
         ];
-
-        const loggedInUser = localStorage.getItem('user');
 
         if (!errors.isEmpty()) {
             errors.array({ onlyFirstError: true }).forEach(error => {
@@ -135,7 +125,7 @@ router.post(
         if (!validation) {
             res.render('products/add', {
                 activeTab: 'product',
-                userName: loggedInUser.name,
+                userName: req.session.user.name,
                 product: product
             });
         } else {
@@ -161,7 +151,7 @@ router.post(
                     ],
                     original_price: req.body.originalPrice,
                     discount: req.body.discount,
-                    price: parseInt(req.body.originalPrice) - ( parseInt(req.body.originalPrice) * ( parseInt(req.body.discount) / 100 ) ),
+                    price: Math.floor( parseInt(req.body.originalPrice) - ( parseInt(req.body.originalPrice) * ( parseInt(req.body.discount) / 100 ) ) ),
                     show_on_banner: req.body.showOnBanner !== undefined ? true : false,
                     created_at: Date.now()
                 });
@@ -194,7 +184,7 @@ router.post(
 
                         res.render('products/add', {
                             activeTab: 'product',
-                            userName: loggedInUser.name,
+                            userName: req.session.user.name,
                             product: product
                         });
                     })
@@ -204,7 +194,7 @@ router.post(
 
                 res.render('products/add', {
                     activeTab: 'product',
-                    userName: loggedInUser.name,
+                    userName: req.session.user.name,
                     product: product
                 });
             }
@@ -215,11 +205,9 @@ router.post(
 router.get('/edit/:id', auth, async (req, res) => {
     const product = await Product.findById(req.params.id);
 
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
     res.render('products/edit', {
         activeTab: 'product',
-        userName: loggedInUser.name,
+        userName: req.session.user.name,
         product: product
     });
 });
@@ -271,7 +259,7 @@ router.post(
                 show_on_banner: typeof req.body.showOnBanner !== 'undefined' ? true : false
             };
 
-            product.price = parseInt(product.original_price) - (parseInt(product.original_price) * (parseInt(product.discount) / 100));
+            product.price = Math.floor( parseInt(product.original_price) - (parseInt(product.original_price) * (parseInt(product.discount) / 100)) );
 
             let validation = true;
 
@@ -324,13 +312,10 @@ router.post(
                 validation = false;
             }
 
-            const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
             if (!validation) {
-
                 res.render('products/edit', {
                     activeTab: 'product',
-                    userName: loggedInUser.name,
+                    userName: req.session.user.name,
                     product: product
                 });
             } else {
@@ -356,7 +341,7 @@ router.post(
                         ],
                         original_price: product.original_price,
                         discount: product.discount,
-                        price: parseInt(product.original_price) - ( parseInt(product.original_price) * ( parseInt(product.discount) / 100 ) ),
+                        price: Math.floor( parseInt(product.original_price) - ( parseInt(product.original_price) * ( parseInt(product.discount) / 100 ) ) ),
                         show_on_banner: product.show_on_banner !== undefined ? true : false,
                         updated_at: Date.now()
                     });
@@ -389,7 +374,7 @@ router.post(
                                 console.log(err);
                                 res.render('products/edit', {
                                     activeTab: 'product',
-                                    userName: loggedInUser.name,
+                                    userName: req.session.user.name,
                                     product: product,
                                     errorMsg: 'An unexpected error occured'
                                 });
@@ -404,7 +389,7 @@ router.post(
                     console.log(e);
                     res.render('products/edit', {
                         activeTab: 'product',
-                        userName: loggedInUser.name,
+                        userName: req.session.user.name,
                         product: product,
                         errorMsg: 'An unexpected error occured'
                     });

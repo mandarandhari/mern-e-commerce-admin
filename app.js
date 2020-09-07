@@ -14,6 +14,8 @@ var customerRouter = require('./routes/customer');
 var profileRouter = require('./routes/profile');
 var productsRouter = require('./routes/products');
 var productRouter = require('./routes/product');
+var ordersRouter = require('./routes/orders');
+var orderRouter = require('./routes/order');
 
 var app = express();
 
@@ -32,7 +34,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 3600*1000
+  }
 }));
 app.use(flash());
 
@@ -44,6 +49,8 @@ app.use('/customers', customersRouter);
 app.use('/customer', customerRouter);
 app.use('/products', productsRouter);
 app.use('/product', productRouter);
+app.use('/orders', ordersRouter);
+app.use('/order', orderRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

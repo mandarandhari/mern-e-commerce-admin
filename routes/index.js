@@ -3,12 +3,7 @@ var app = express();
 var router = express.Router();
 const path = require('path');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
-if (typeof localStorage === "undefined" || localStorage === null) {
-  var LocalStorage = require('node-localstorage').LocalStorage;
-  localStorage = new LocalStorage('./scratch');
-}
+var session = require('express-session');
 
 const auth = require('../middlewares/auth'); //Middleware
 const User = require('../models/User'); //User Model
@@ -75,19 +70,13 @@ router.get('/toastr/build/toastr.min.js', (req, res) => {
   res.sendFile(path.join(path.resolve(), '/node_modules/toastr/build/toastr.min.js'));
 });
 
-router.get('/ckeditor/ckeditor.js', (req, res) => {
-  res.sendFile(path.join(path.resolve(), '/node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js'));
-})
-
 /* GET home page. */
 router.get('/', auth, function(req, res, next) {
   res.redirect('/dashboard');
 });
 
 router.get('/login', function(req, res, next) {
-  const user = localStorage.getItem('user');
-
-  if (!user) {
+  if (!req.session.user) {
     res.render('login', {
       error: '',
       username: ''
@@ -98,11 +87,9 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/dashboard', auth, (req, res) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-
   res.render('dashboard', {
     activeTab: 'dashboard',
-    userName: user.name
+    userName: req.session.user.name
   });
 });
 
@@ -125,17 +112,12 @@ router.post('/login', async (req, res) => {
         username: req.body.email
       });
     } else {
-      const token = jwt.sign({
-        id: user._id
-      }, process.env.SECRET);
-
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify({
+      req.session.user = {
         _id: user._id,
         name: user.name,
         email: user.email,
         created_at: user.created_at
-      }));
+      }
 
       res.redirect('/dashboard');
     }

@@ -6,18 +6,11 @@ const auth = require('../middlewares/auth');
 
 const User = require('../models/User'); //User Model
 
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require('node-localstorage').LocalStorage;
-    localStorage = new LocalStorage('./scratch');
-}
-
 router.get('/add', auth, (req, res) => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
     res.render('users/add', {
         activeTab: 'user',
         user: {},
-        userName: loggedInUser.name
+        userName: req.session.user.name
     });
 });
 
@@ -85,12 +78,10 @@ router.post(
                 }
             });
 
-            const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
             res.render('users/add', {
                 activeTab: 'user',
                 user: user,
-                userName: loggedInUser.name
+                userName: req.session.user.name
             });
         } else {
             const salt = await bcrypt.genSalt(10);
@@ -124,12 +115,10 @@ router.get('/edit/:id', auth, async (req, res) => {
             email: userEdit.email
         };
 
-        const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
         res.render('users/edit', {
             activeTab: 'user',
             user: user,
-            userName: loggedInUser.name
+            userName: req.session.user.name
         });
     } else {
         req.flash('error', 'Something went wrong');
@@ -197,12 +186,10 @@ router.post(
                     }
                 });
 
-                const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
                 res.render('users/edit', {
                     activeTab: 'user',
                     user: user,
-                    userName: loggedInUser.name
+                    userName: req.session.user.name
                 });
             } else {
                 let updateData = {
