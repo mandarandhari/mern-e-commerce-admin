@@ -12,6 +12,18 @@ const OrderSchema = new mongoose.Schema({
         required: true,
         ref: 'customers'
     },
+    products: {
+        type: Array,
+        required: true
+    },
+    invoice_address: {
+        type: Object,
+        required: true
+    },
+    shipping_address: {
+        type: Object,
+        required: true
+    },
     total_price: {
         type: Number,
         required: true
@@ -34,6 +46,10 @@ const OrderSchema = new mongoose.Schema({
     created_at: {
         type: Date,
         default: Date.now()
+    },
+    updated_at: {
+        type: Date,
+        default: null
     }
 });
 

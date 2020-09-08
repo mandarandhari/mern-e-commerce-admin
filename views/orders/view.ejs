@@ -6,7 +6,7 @@
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-12">
-                                <h1 class="m-0 text-dark">Order id - <%= order._id %></h1>
+                                <h1 class="m-0 text-dark">Order id - <%= order.order_id %></h1>
                             </div><!-- /.col -->
                         </div><!-- /.row -->
                     </div><!-- /.container-fluid -->
@@ -31,7 +31,7 @@
                                                 <table>
                                                     <th>Order Status</th>
                                                     <td>
-                                                        <input type="hidden" name="order_id" class="order_id" value="<%= order._id %>">
+                                                        <input type="hidden" name="order_id" class="order_id" value="<%= order.order_id %>">
                                                         <select name="order_status" id="orderStatus" class="form-control ml-3">
                                                             <option value="pending" <% if (order.order_status === 'pending') { %>selected<% } %>>Pending</option>
                                                             <option value="processing" <% if (order.order_status === 'processing') { %>selected<% } %>>Processing</option>
@@ -56,17 +56,17 @@
                                                         <th>Unit Price</th>
                                                         <th>Total Price</th>
                                                     </tr>
-                                                    <% order.order_has_products.forEach((product, index) => { %>
+                                                    <% order.products.forEach((product, index) => { %>
                                                     <tr>
                                                         <td><%= (index + 1) %></td>
                                                         <td>
-                                                            <img src="<%= product.product_details.image_url %>" alt="" style="width: 150px;" />
+                                                            <img src="<%= product.image_url %>" alt="" style="width: 150px;" />
                                                         </td>
-                                                        <td><%= product.product_details.title %></td>
+                                                        <td><%= product.title %></td>
                                                         <td><%= product.quantity %></td>
                                                         <td><%= product.size.toUpperCase() %></td>
-                                                        <td><%= product.product_details.price %></td>
-                                                        <td><%= (product.quantity * product.product_details.price) %></td>
+                                                        <td><%= product.price %></td>
+                                                        <td><%= (product.quantity * product.price) %></td>
                                                     </tr>
                                                     <% }); %>
                                                     <tr>
@@ -75,7 +75,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="text-right" colspan="6">Total</th>
-                                                        <th><%= order.price %></th>
+                                                        <th><%= order.total_price %></th>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -118,8 +118,7 @@
                                                     <tr>
                                                         <th style="vertical-align: baseline;">Address: </th>
                                                         <td class="pl-2">
-                                                            <p class="mb-0"><%= order.invoice_address.address1 %>,</p>
-                                                            <p class="mb-0"><%= order.invoice_address.address2 %>,</p>
+                                                            <p class="mb-0"><%= order.invoice_address.address1 %>, <%= order.invoice_address.address2 %>,</p>
                                                             <p class="mb-0"><%= order.invoice_address.city %> - <%= order.invoice_address.postal_code %></p>
                                                             <p class="mb-0"><%= order.invoice_address.region %>, <%= order.invoice_address.country %></p>
                                                         </td>
@@ -148,8 +147,7 @@
                                                     <tr>
                                                         <th style="vertical-align: baseline;">Address: </th>
                                                         <td class="pl-2">
-                                                            <p class="mb-0"><%= order.shipping_address.address1 %>,</p>
-                                                            <p class="mb-0"><%= order.shipping_address.address2 %>,</p>
+                                                            <p class="mb-0"><%= order.shipping_address.address1 %>, <%= order.shipping_address.address2 %>,</p>
                                                             <p class="mb-0"><%= order.shipping_address.city %> - <%= order.shipping_address.postal_code %></p>
                                                             <p class="mb-0"><%= order.shipping_address.region %>, <%= order.shipping_address.country %></p>
                                                         </td>
@@ -167,6 +165,5 @@
                 </div>
                 <!-- /.content -->
             </div>
-            <%= order %>
             <!-- /.content-wrapper -->
 <%- include('../layouts/footer') -%>
