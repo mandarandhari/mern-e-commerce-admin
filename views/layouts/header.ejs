@@ -76,26 +76,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </li>
                             <li class="nav-item">
                                 <a href="/orders" class="nav-link <% if (activeTab == 'orders' || activeTab == 'order') { %> active <% } %>">
-                                    <i class="nav-icon  fas fa-shopping-cart"></i>
+                                    <i class="nav-icon fas fa-shopping-cart"></i>
                                     <p>Orders</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="/customers" class="nav-link <% if (activeTab == 'customers' || activeTab == 'customer') { %> active <% } %>">
-                                    <i class="nav-icon  fas fa-smile-beam"></i>
+                                    <i class="nav-icon fas fa-smile-beam"></i>
                                     <p>Customers</p>
                                 </a>
                             </li>
-                            
+                            <li class="nav-item">
+                                <a href="/contacts" class="nav-link <% if (activeTab == 'contacts') { %> active <% } %>">
+                                    <i class="nav-icon fas fa-address-book"></i>
+                                    <p>Contacts</p>
+                                </a>
+                            </li>
                             <li class="nav-item">
                                 <a href="/users" class="nav-link <% if (activeTab == 'users' || activeTab == 'user') { %> active <% } %>">
-                                    <i class="nav-icon  fas fa-users"></i>
+                                    <i class="nav-icon fas fa-users"></i>
                                     <p>Users</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="/profile" class="nav-link <% if (activeTab == 'profile') { %> active <% } %>">
-                                    <i class="nav-icon  fas fa-address-card"></i>
+                                    <i class="nav-icon fas fa-address-card"></i>
                                     <p>Profile</p>
                                 </a>
                             </li>

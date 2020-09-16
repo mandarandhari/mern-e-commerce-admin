@@ -45,7 +45,10 @@ router.get('/', auth, function(req, res, next) {
 
   User.paginate(searchterm, {
     offset: offset,
-    limit: limit
+    limit: limit,
+    sort: {
+      _id: -1
+    }
   })
   .then(result => {
     let users =[];

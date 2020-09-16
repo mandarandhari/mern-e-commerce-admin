@@ -81,7 +81,9 @@ router.get('/', auth, async (req, res, next) => {
         // {
         //     $match: search_condition
         // }
-    ]);
+    ]).sort({
+        '_id': -1
+    });
 
     await Order.aggregatePaginate(orderAggregate, {
         offset: offset,

@@ -15,6 +15,10 @@ $(document).ready(function () {
         $('#deleteOrderForm').attr('action', $(this).attr('data-href'));
     });
 
+    $(document).on('click', '.delete-contact-btn', function () {
+        $('#deleteContactForm').attr('action', $(this).attr('data-href'));
+    });
+
     $(document).on('change', '.original-price, .discount', function (e) {
         if ( $('.original-price').val() !== '' && !$.isNumeric($('.original-price').val()) ) {
             alert("Please enter valid value of product original price");
@@ -68,5 +72,11 @@ $(document).ready(function () {
                 }
             }
         })
+    });
+
+    $(document).on('click', '.view-contact-btn', function() {
+        $('.contact-name').html($(this).attr('data-name'));
+        $('.contact-email').html($(this).attr('data-email'));
+        $('.contact-message').html($(this).attr('data-message'));
     });
 });

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <style type="text/css">
+        body,
+        table,
+        td,
+        a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            font-family: "Open Sans", sans-serif;
+        }
+
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+
+        table {
+            border-collapse: collapse !important;
+        }
+
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        @media screen and (max-width: 480px) {
+            .mobile-hide {
+                display: none !important;
+            }
+
+            .mobile-center {
+                text-align: center !important;
+            }
+        }
+
+        div[style*="margin: 16px 0;"] {
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body style="margin: 0 !important; padding: 0 !important; background-color: #eeeeee;" bgcolor="#eeeeee">
+    <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Open Sans, Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+        For what reason would it be advisable for me to think about business content? That might be little bit risky to have crew member like them.
+    </div>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center" style="background-color: #eeeeee;" bgcolor="#eeeeee">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                    <tr>
+                        <td align="center" valign="top" style="font-size:0; padding: 35px; background: #ffffff" bgcolor="#F44336">
+                            <div style="display:inline-block; vertical-align:top; width:100%;">
+                                <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 36px; font-weight: 800; line-height: 48px; text-align: center;" class="mobile-center">
+                                            <a>
+                                                <img src="<%= frontend_url + 'images/logo-e.png' %>" alt="">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 35px 35px 20px 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                                <tr>
+                                    <td align="center" style="font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 25px;"> <img src="https://img.icons8.com/carbon-copy/100/000000/checked-checkbox.png" width="125" height="120" style="display: block; border: 0px;" /><br>
+                                    <h2 style="font-size: 30px; line-height: 36px; color: #333333; margin: 0;"> <strong>order has been <%= order_status %>!</strong> </h2>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" style="font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 24px; padding-top: 10px;">
+                                        <p style="line-height: 24px; color: #777777;"> <% if (order_status === 'shipped') { %>We will deliver your order within few days. You can find the order details below.<% } if (order_status === 'delivered') { %>We have successfully delivered your order. We are happy to see you again<% } if (order_status === 'cancelled') { %>As per your request, we have cancelled your order delivery. We hope we will see you again<% } %> </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" style="padding-top: 20px;">
+                                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <tr>
+                                                <td width="100%" colspan="3" align="left" bgcolor="#eeeeee" style="font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;"> Order ID - <%= order.order_id %> </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="100%" colspan="3" style="border-bottom: 1px solid #ccc; padding-top: 10px; padding-bottom: 10px;">
+                                                    <table width="100%">
+                                                        <tr>
+                                                            <td width="50%"><strong>Product</strong></td>
+                                                            <td width="25%" align="center"><strong>Details</strong></td>
+                                                            <td width="25%" align="right"><strong>Price</strong></td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="100%" colspan="3" style="border-bottom: 1px solid #222222;">
+                                                    <table width="100%">
+                                                    <% order.products.forEach(product => { %>
+                                                        <tr>
+                                                            <td width="50%" align="left" style="font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;"> 
+                                                                <table>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <img src="<%= product.image_url %>" alt="" width="100px">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <p style="font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 300;"><%= product.title %></p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td width="25%" align="center">
+                                                                <table>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <p style="font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 300;">Price: Rs.<%= product.price %></p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <p style="font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 300;">Quantity: <%= product.quantity %></p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td width="25%" align="right" style="font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 24px; padding: 15px 10px 5px 10px;"> Rs. <%= parseInt(product.price) * parseInt(product.quantity) %> </td>
+                                                        </tr>
+                                                    <% }); %>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="50%" align="left" style="font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 24px; padding: 5px 10px;"> Delivery Charges </td>
+                                                <td width="25%" colspan="2" align="right" style="font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 24px; padding: 5px 10px;"> Rs. 50 </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" style="padding-top: 20px;">
+                                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <tr>
+                                                <td width="50%" align="left" style="font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;"> TOTAL </td>
+                                                <td width="25%" align="right" style="font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;"> Rs.<%= order.total_price %> </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <% if (order_status === 'shipped' || order_status === 'delivered') { %>
+                    <tr>
+                        <td align="center" height="100%" valign="top" width="100%" style="padding: 0 35px 35px 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:660px;">
+                                <tr>
+                                    <td align="left " valign="top" style="font-size:0;">
+                                        <div style="display:inline-block; max-width:50%; min-width:240px; vertical-align:top; width:100%;">
+                                            <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                        <p><strong>Delivery Address</strong></p>
+                                                        <p style="font-weight: 300; font-size: 15px; line-height: 20px;"><%= order.shipping_address.first_name + ' ' + order.shipping_address.last_name %><br><%= order.shipping_address.address1 + ', ' + order.shipping_address.address2 %><br><%= order.shipping_address.city + ', ' + order.shipping_address.postal_code %><br><%= order.shipping_address.region + ', ' + order.shipping_address.country %></p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <% } %>
+                    <tr>
+                        <td align="center" style="padding: 35px; background-color: #222222;" bgcolor="#ffffff">
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                                <tr>
+                                    <td width="33.33%">
+                                        <div style="border-left: 1px solid #222222;">
+                                            <table align="center">
+                                                <tr>
+                                                    <td align="center">
+                                                        <img src="<%= frontend_url + 'images/pin-8-48.png' %>" alt="Location">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p style="color: #777777; margin-bottom: 0%; font-size: 13px;">T-Shirt Store, Hasicska,</p>
+                                                        <p style="color: #777777; margin-bottom: 0%; margin-top: 0%; font-size: 13px;">Ostrava, Czech republic</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                    </td>
+                                    <td width="33.33%">
+                                        <div style="border-left: 1px solid #222222;">
+                                            <table align="center">
+                                                <tr>
+                                                    <td align="center">
+                                                        <img src="<%= frontend_url + 'images/phone-48.png' %>" alt="Contact">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p style="color: #777777; margin-bottom: 0%; font-size: 13px;">(040)23233434545</p>
+                                                        <p style="color: #777777; margin-bottom: 0%; margin-top: 0%; font-size: 13px;">(040)23233434545</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                    </td>
+                                    <td width="33.33%">
+                                        <div style="border-left: 1px solid #222222;">
+                                            <table align="center">
+                                                <tr>
+                                                    <td align="center">
+                                                        <img src="<%= frontend_url + 'images/email-5-48.png' %>" alt="Support">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p style="color: #777777; margin-bottom: 0%; font-size: 13px;">Support@Shirtstore.com</p>
+                                                        <p style="color: #777777; margin-bottom: 0%; font-size: 13px; margin-top: 0%">Shirtstore@example.com</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

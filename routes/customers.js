@@ -37,7 +37,10 @@ router.get('/', auth, (req, res) => {
 
     Customer.paginate(searchquery, {
         offset: offset,
-        limit: limit
+        limit: limit,
+        sort: {
+            _id: -1
+        }
     })
     .then(result => {
         let customers = [];

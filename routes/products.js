@@ -24,7 +24,10 @@ router.get('/', auth, async (req, res) => {
 
     Product.paginate(searchterm, {
         offset: offset,
-        limit: limit
+        limit: limit,
+        sort: {
+            _id: -1
+        }
     })
     .then(result => {
         const products = [];

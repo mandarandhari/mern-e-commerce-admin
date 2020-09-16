@@ -99,35 +99,6 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12 mt-5">
-                                                <h5>Invoice Address</h5>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <table>
-                                                    <tr>
-                                                        <th>Name: </th>
-                                                        <td><%= order.invoice_address.first_name + " " + order.invoice_address.last_name %></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Email: </th>
-                                                        <td><%= order.invoice_address.email %></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Phone: </th>
-                                                        <td><%= order.invoice_address.phone %></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th style="vertical-align: baseline;">Address: </th>
-                                                        <td class="pl-2">
-                                                            <p class="mb-0"><%= order.invoice_address.address1 %>, <%= order.invoice_address.address2 %>,</p>
-                                                            <p class="mb-0"><%= order.invoice_address.city %> - <%= order.invoice_address.postal_code %></p>
-                                                            <p class="mb-0"><%= order.invoice_address.region %>, <%= order.invoice_address.country %></p>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12 mt-5">
                                                 <h5>Shipping Address</h5>
                                             </div>
                                             <div class="col-md-12">
