@@ -13,50 +13,10 @@ router.get('/', auth, async (req, res, next) => {
 
     if (req.query.searchterm && req.query.searchterm.length) {
         search_condition = {
-            // $or: [
-            //     {
-            //         'order_id': {
-            //             $regex: '.*' + req.query.searchterm + '.*'
-            //         }
-            //     }, {
-            //         $regexFind: {
-            //             input: '$customers.first_name',
-            //             regex: '/' + req.query.searchterm + '/'
-            //         }
-            //     }, {
-            //         $regexFind: {
-            //             input: '$customers.last_name',
-            //             regex: '/' + req.query.searchterm + '/'
-            //         }
-            //     }
-            // ]
-            $or: [
-                {
-                    'order_id': {
-                        $regex: '.*' + req.query.searchterm + '.*'
-                    }
-                }, {
-                    [Customer.first_name]: {
-                        $regex: '.*' + req.query.searchterm + '.*'
-                    }
-                }, {
-                    [Customer.last_name]: {
-                        $regex: '.*' + req.query.searchterm + '.*'
-                    }
-                }
-            ]
-            // $or: [
-            //     {
-            //         'order_id': '/' + req.query.searchterm + '/'
-            //     }, {
-            //         'customers.first_name':  '/' + req.query.searchterm + '/'
-            //     }, {
-            //         'customers.last_name': '/' + req.query.searchterm + '/'
-            //     }
-            // ]
+            'order_id': {
+                $regex: '.*' + req.query.searchterm + '.*'
+            }
         }
-
-        // console.log(search_condition);
     }
 
     let orderAggregate = Order.aggregate([
@@ -77,10 +37,7 @@ router.get('/', auth, async (req, res, next) => {
             }
         }, {
             $unwind: '$customer'
-        }, 
-        // {
-        //     $match: search_condition
-        // }
+        }
     ]).sort({
         '_id': -1
     });
@@ -94,7 +51,7 @@ router.get('/', auth, async (req, res, next) => {
             res.redirect('/dashboard');
         } else {
             let orders = [];
-console.log(result);
+
             result.docs.forEach(order => {
                 orders.push({
                     customer_name: order.customer.first_name + ' ' + order.customer.last_name,

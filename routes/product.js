@@ -203,13 +203,21 @@ router.post(
 );
 
 router.get('/edit/:id', auth, async (req, res) => {
-    const product = await Product.findById(req.params.id);
-
-    res.render('products/edit', {
-        activeTab: 'product',
-        userName: req.session.user.name,
-        product: product
+    const product = await Product.findOne({
+        _id: req.params.id,
+        is_deleted: false
     });
+
+    if (product) {
+        res.render('products/edit', {
+            activeTab: 'product',
+            userName: req.session.user.name,
+            product: product
+        });
+    } else {
+        req.flash('error', 'Product does not exist');
+        res.redirect('/products');
+    }
 });
 
 router.post(
@@ -320,7 +328,7 @@ router.post(
                 });
             } else {
                 try {
-                    if (product.show_on_banner !== undefined) {
+                    if (product.show_on_banner) {
                         await Product.findOneAndUpdate({
                             show_on_banner: true
                         }, {
@@ -342,7 +350,7 @@ router.post(
                         original_price: product.original_price,
                         discount: product.discount,
                         price: Math.floor( parseInt(product.original_price) - ( parseInt(product.original_price) * ( parseInt(product.discount) / 100 ) ) ),
-                        show_on_banner: product.show_on_banner !== undefined ? true : false,
+                        show_on_banner: product.show_on_banner,
                         updated_at: Date.now()
                     });
 
@@ -407,25 +415,30 @@ router.post('/delete/:id', auth, async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
-        var dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_KEY, fetch: fetch });
+        if (!product.show_on_banner) {
+            var dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_KEY, fetch: fetch });
 
-        try {
-            await dbx.filesDeleteV2({path: product.image});
+            try {
+                await dbx.filesDeleteV2({path: product.image});
 
-            await Product.findByIdAndDelete(req.params.id);
+                await Product.findByIdAndUpdate(req.params.id, {
+                    is_deleted: true,
+                    deleted_at: Date.now()
+                });
 
-            req.flash('success', 'Product deleted');
-        } catch (e) {
-            console.log(e);
-            req.flash('error', 'An unexpected error occured');
+                req.flash('success', 'Product deleted');
+            } catch (e) {
+                console.log(e);
+                req.flash('error', 'An unexpected error occured');
+            }
+        } else {
+            req.flash('error', 'Unable to delete product as it is shown on banner');
         }
-
-        res.redirect('/products');
     } else {
         req.flash('error', 'Product does not exists');
-
-        res.redirect('/products');
     }
+
+    res.redirect('/products');
 });
 
 module.exports = router;

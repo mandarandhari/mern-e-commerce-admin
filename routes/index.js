@@ -119,14 +119,17 @@ router.post('/login', async (req, res) => {
         created_at: user.created_at
       }
 
+      if (req.body.remember === 'on') {
+        req.session.cookie.maxAge = 3600*24*365;
+      }
+
       res.redirect('/dashboard');
     }
   }
 });
 
 router.post('/logout', auth, (req, res) => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  req.session.destroy();
 
   res.redirect('/login');
 })

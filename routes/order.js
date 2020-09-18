@@ -61,14 +61,14 @@ router.post('/change_status/:order_id', auth, async (req, res) => {
                         if (err) {
                             console.log(err);
                         } else {
-                            const mainOptions = {
+                            var mainOptions = {
                                 from: "'T shirt store' store@tshirtstore.com",
                                 to: customer.email,
                                 subject: req.body.status === 'shipped' ? 'Order Shipped' : ( req.body.status === 'delivered' ? 'Order Delivered' : 'Order Cancelled' ),
                                 html: data
                             };
 
-                            transporter.sendMail(mainOptions, (err, info) => {
+                            transporter.sendMail(mainOptions, function (err, info) {
                                 if (err) {
                                     console.log(err);
                                 }
@@ -97,6 +97,30 @@ router.post('/change_status/:order_id', auth, async (req, res) => {
             status: false
         });
     }
-})
+});
+
+router.post('/delete/:id', auth, async (req, res) => {
+    if (req.params.id) {
+        const order = await Order.findOne({
+            order_id: req.params.id
+        });
+
+        if (order) {
+            try {
+                await Order.findByIdAndDelete(order._id);
+
+                req.flash('success', 'Order deleted');
+            } catch (error) {
+                req.flash('error', 'An unexpected error occurred');
+            }
+        } else {
+            req.flash('error', 'Order does not exists');
+        }
+    } else {
+        req.flash('error', 'Order does not exists');
+    }
+
+    res.redirect('/orders');
+});
 
 module.exports = router;

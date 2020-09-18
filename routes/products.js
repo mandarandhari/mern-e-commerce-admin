@@ -12,13 +12,22 @@ router.get('/', auth, async (req, res) => {
         offset = parseInt(req.query.page) > 1 ? limit * (parseInt(req.query.page) - 1) + 1 : offset;
     }
 
-    let searchterm = {};
+    let searchterm = {
+        is_deleted: false
+    };
 
     if (req.query.searchterm) {
         searchterm = {
-            title: {
-                $regex: '.*' + req.query.searchterm + '.*'
-            }
+            $and: [
+                {
+                    title: {
+                        $regex: '.*' + req.query.searchterm + '.*'
+                    }
+                },
+                {
+                    is_deleted: false
+                }
+            ]
         }
     }
 

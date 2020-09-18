@@ -29,7 +29,7 @@ router.get('/', auth, async (req, res) => {
         });
 
         res.render('contacts', {
-            activeTab: 'customers',
+            activeTab: 'contacts',
             userName: req.session.user.name,
             contacts: contacts,
             current: result.page,
